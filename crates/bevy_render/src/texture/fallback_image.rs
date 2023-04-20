@@ -53,10 +53,7 @@ fn fallback_image_new(
 
     // We can't create textures with data when it's a depth texture or when using multiple samples
     // 🚧🚧 TODO 🚧🚧: Not sure about this one, please review carefully. I don't have any clue tbh
-    let texture = if format.sample_type(Some(TextureAspect::DepthOnly))
-        == Some(TextureSampleType::Depth)
-        || samples > 1
-    {
+    let texture = if format.sample_type(None) == Some(TextureSampleType::Depth) || samples > 1 {
         render_device.create_texture(&image.texture_descriptor)
     } else {
         render_device.create_texture_with_data(render_queue, &image.texture_descriptor, &image.data)
