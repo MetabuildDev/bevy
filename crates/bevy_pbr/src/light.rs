@@ -403,7 +403,7 @@ pub struct Cascade {
 
 pub fn update_directional_light_cascades(
     directional_light_shadow_map: Res<DirectionalLightShadowMap>,
-    views: Query<(Entity, &GlobalTransform, &Projection, &Camera)>,
+    views: Query<(Entity, &GlobalTransform, &Projection, &Camera), With<Camera3d>>,
     mut lights: Query<(
         &GlobalTransform,
         &DirectionalLight,
