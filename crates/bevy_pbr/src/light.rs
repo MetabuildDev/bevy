@@ -1,6 +1,5 @@
 use std::collections::HashSet;
 
-use bevy_core_pipeline::prelude::Camera3d;
 use bevy_ecs::prelude::*;
 use bevy_math::{Mat4, Rect, UVec2, UVec3, Vec2, Vec3, Vec3A, Vec3Swizzles, Vec4, Vec4Swizzles};
 use bevy_reflect::prelude::*;
@@ -404,7 +403,7 @@ pub struct Cascade {
 
 pub fn update_directional_light_cascades(
     directional_light_shadow_map: Res<DirectionalLightShadowMap>,
-    views: Query<(Entity, &GlobalTransform, &Projection, &Camera), With<Camera3d>>,
+    views: Query<(Entity, &GlobalTransform, &Projection, &Camera)>,
     mut lights: Query<(
         &GlobalTransform,
         &DirectionalLight,
