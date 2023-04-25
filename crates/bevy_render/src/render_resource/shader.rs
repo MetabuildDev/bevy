@@ -121,7 +121,7 @@ impl ProcessedShader {
             // TODO: process macros here
             ProcessedShader::Wgsl(source) => naga::front::wgsl::parse_str(source)?,
             ProcessedShader::Glsl(source, shader_stage) => {
-                let mut parser = naga::front::glsl::Parser::default();
+                let mut parser = naga::front::glsl::Frontend::default();
                 parser
                     .parse(&naga::front::glsl::Options::from(*shader_stage), source)
                     .map_err(ShaderReflectError::GlslParse)?
@@ -136,7 +136,7 @@ impl ProcessedShader {
         };
         const CAPABILITIES: &[(Features, Capabilities)] = &[
             (Features::PUSH_CONSTANTS, Capabilities::PUSH_CONSTANT),
-            (Features::SHADER_FLOAT64, Capabilities::FLOAT64),
+            (Features::SHADER_F64, Capabilities::FLOAT64),
             (
                 Features::SHADER_PRIMITIVE_INDEX,
                 Capabilities::PRIMITIVE_INDEX,

@@ -51,10 +51,10 @@ bevy_tasks = { path = "../bevy_tasks", version = "0.10.1" }
 image = { version = "0.24", default-features = false }
 
 # misc
-wgpu = { git = "https://github.com/MetabuildDev/wgpu.git", branch = "v0.15", features = ["spirv"] }
-wgpu-hal = { git = "https://github.com/MetabuildDev/wgpu.git", branch = "v0.15" }
+wgpu = { version = "0.16.0", features = ["spirv"] }
+wgpu-hal = "0.16.0"
 codespan-reporting = "0.11.0"
-naga = { version = "0.11.0", features = ["glsl-in", "spv-in", "spv-out", "wgsl-in", "wgsl-out"] }
+naga = { version = "0.12.0", features = ["glsl-in", "spv-in", "spv-out", "wgsl-in", "wgsl-out"] }
 serde = { version = "1", features = ["derive"] }
 bitflags = "1.2.1"
 smallvec = { version = "1.6", features = ["union", "const_generics"] }
