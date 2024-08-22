@@ -342,7 +342,6 @@ impl<T: Event> ApplicationHandler<T> for WinitAppRunnerState<T> {
                             key_code,
                             logical_key,
                             state: bevy_input::ButtonState::Released,
-                            repeat: false,
                             window,
                         });
                     }
