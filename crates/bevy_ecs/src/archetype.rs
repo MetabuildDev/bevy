@@ -336,7 +336,7 @@ pub struct Archetype {
     edges: Edges,
     entities: Vec<ArchetypeEntity>,
     components: ImmutableSparseSet<ComponentId, ArchetypeComponentInfo>,
-    flags: ArchetypeFlags,
+    pub(crate) flags: ArchetypeFlags,
 }
 
 impl Archetype {
