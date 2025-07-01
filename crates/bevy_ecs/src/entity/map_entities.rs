@@ -7,7 +7,7 @@ use crate::{
 };
 
 use alloc::{collections::VecDeque, vec::Vec};
-use bevy_platform::collections::HashSet;
+use bevy_platform::collections::{HashMap, HashSet};
 use core::hash::BuildHasher;
 use smallvec::SmallVec;
 
@@ -59,39 +59,71 @@ impl MapEntities for Entity {
     }
 }
 
-impl MapEntities for Option<Entity> {
+impl<T: MapEntities> MapEntities for Option<T> {
     fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
-        if let Some(entity) = self {
-            *entity = entity_mapper.get_mapped(*entity);
+        if let Some(entities) = self {
+            entities.map_entities(entity_mapper);
         }
     }
 }
 
-impl<S: BuildHasher + Default> MapEntities for HashSet<Entity, S> {
+impl<T: MapEntities + Eq + core::hash::Hash, S: BuildHasher + Default> MapEntities
+    for HashSet<T, S>
+{
     fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
-        *self = self.drain().map(|e| entity_mapper.get_mapped(e)).collect();
+        *self = self
+            .drain()
+            .map(|mut entities| {
+                entities.map_entities(entity_mapper);
+                entities
+            })
+            .collect();
     }
 }
-impl MapEntities for Vec<Entity> {
+
+impl<K: MapEntities + Eq + core::hash::Hash, V: MapEntities, S: BuildHasher + Default> MapEntities
+    for HashMap<K, V, S>
+{
     fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
-        for entity in self.iter_mut() {
-            *entity = entity_mapper.get_mapped(*entity);
+        *self = self
+            .drain()
+            .map(|(mut key_entities, mut value_entities)| {
+                key_entities.map_entities(entity_mapper);
+                value_entities.map_entities(entity_mapper);
+                (key_entities, value_entities)
+            })
+            .collect();
+    }
+}
+
+impl<T: MapEntities, const N: usize> MapEntities for [T; N] {
+    fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
+        for entities in self.iter_mut() {
+            entities.map_entities(entity_mapper);
         }
     }
 }
 
-impl MapEntities for VecDeque<Entity> {
+impl<T: MapEntities> MapEntities for Vec<T> {
     fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
-        for entity in self.iter_mut() {
-            *entity = entity_mapper.get_mapped(*entity);
+        for entities in self.iter_mut() {
+            entities.map_entities(entity_mapper);
         }
     }
 }
 
-impl<A: smallvec::Array<Item = Entity>> MapEntities for SmallVec<A> {
+impl<T: MapEntities> MapEntities for VecDeque<T> {
     fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
-        for entity in self.iter_mut() {
-            *entity = entity_mapper.get_mapped(*entity);
+        for entities in self.iter_mut() {
+            entities.map_entities(entity_mapper);
+        }
+    }
+}
+
+impl<T: MapEntities, A: smallvec::Array<Item = T>> MapEntities for SmallVec<A> {
+    fn map_entities<E: EntityMapper>(&mut self, entity_mapper: &mut E) {
+        for entities in self.iter_mut() {
+            entities.map_entities(entity_mapper);
         }
     }
 }
